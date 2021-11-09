@@ -161,7 +161,7 @@ class GameOfLife(object):
             time = np.transpose(np.array(time))
 
             data = np.transpose(np.vstack(time, com_position))
-
+            #Save data
             np.savetxt('com_data.dat', data)
 
 ########## Animation ##########
