@@ -35,7 +35,7 @@ def animate(life: GameOfLife, sweeps: int) -> None:
     ani.save("outputs/GoL.gif", fps=60)
 
 
-def equilibrium_calculation(reruns: int, shape: int, max_sweeps: int):
+def equilibrium_calculation(reruns: int, shape: int, max_sweeps: int) -> None:
 
     t_stable = []
 

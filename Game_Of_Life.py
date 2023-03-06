@@ -17,7 +17,7 @@ class GameOfLife(object):
 
         self.create_lattice()
 
-    def create_lattice(self):
+    def create_lattice(self) -> None:
         """Create an NxN lattice with given starting conditions"""
 
         if self.initial == "random":
@@ -36,7 +36,7 @@ class GameOfLife(object):
 
     ########## Update the lattice ##########
 
-    def update(self):
+    def update(self) -> None:
         """Do the update following the rules"""
 
         nearest_neighbours = (
@@ -60,7 +60,7 @@ class GameOfLife(object):
     ########## Calculate properties of the living cells ##########
 
     @property
-    def total_live(self):
+    def total_live(self) -> float:
         """Calculate all living cells"""
         return np.sum(self.lattice)
 
