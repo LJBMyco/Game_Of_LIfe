@@ -22,7 +22,7 @@ class GameOfLife(object):
         """Create an NxN lattice with given starting conditions"""
 
         if self.initial == "random":
-            self.lattice = np.random.random((self.size, self.size))
+            self.lattice = np.random.random((self.shape, self.shape))
             self.lattice[self.lattice >= 0.5] = 1.0
             self.lattice[self.lattice < 0.5] = 0.0
 
@@ -142,22 +142,6 @@ class GameOfLife(object):
             # Save data
             np.savetxt("com_data.dat", data)
 
-    ########## Animation ##########
-
-    def update_animation(self):
-        self.update()
-
-    def animate(self, i):
-        self.update_animation()
-        self.mat.set_data(self.lattice)
-        return (self.mat,)
-
-    def run_animation(self):
-        fig, ax = plt.subplots()
-        self.mat = ax.imshow(self.lattice, cmap="seismic")
-        ani = FuncAnimation(fig, self.animate, interval=1, blit=False)
-        plt.show()
-
 
 if __name__ == "__main__":
 
@@ -184,5 +168,3 @@ if __name__ == "__main__":
     model = GameOfLife(shape, sweeps, start)
     if mode == "data":
         model.data_collection()
-    elif mode == "animate":
-        model.run_animation()
