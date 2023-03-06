@@ -94,33 +94,7 @@ class GameOfLife(object):
 
         # Run data collection based on initial start conditions
 
-        # If random measure time for equilibrium
-        if self.inital == "random":
-
-            t_stable = []
-
-            # Run 200 times
-            for n in range(200):
-                living_cells = []
-                sweeps = []
-                self.create_lattice()
-                for i in range(self.sweeps):
-                    self.update()
-                    living_cells.append(self.total_live())
-                    # If three sweeps in a row have same number of living cells assume equilibrium
-                    if i > 5:
-                        if (
-                            living_cells[i] == living_cells[i - 1]
-                            and living_cells[i] == living_cells[i - 2]
-                            and living_cells[i] == living_cells[i - 3]
-                        ):
-                            t_stable.append(i - 3)
-                            break
-
-            np.savetxt("t_stable.dat", t_stable)
-
-        # If glider start calculate centre of mass position wrt time
-        elif self.inital == "glider":
+        if self.inital == "glider":
 
             com_position = []
             time = []
