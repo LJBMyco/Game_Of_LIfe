@@ -59,9 +59,9 @@ class GameOfLife(object):
 
     ########## Calculate properties of the living cells ##########
 
-    """Calculate all living cells"""
-
+    @property
     def total_live(self):
+        """Calculate all living cells"""
         return np.sum(self.lattice)
 
     """Find centre of mass of a glider"""
