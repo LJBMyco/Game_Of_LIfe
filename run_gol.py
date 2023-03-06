@@ -11,7 +11,7 @@ def main():
     shape = 250
     initial = "random"
 
-    life = GameOfLife(shape=shape, sweeps=sweeps, initial=initial)
+    life = GameOfLife(shape=shape, initial=initial)
 
     fig = plt.figure(figsize=(9, 9))
     ax = fig.add_subplot(1, 1, 1)

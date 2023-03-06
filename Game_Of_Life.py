@@ -10,10 +10,9 @@ from matplotlib.animation import FuncAnimation
 
 
 class GameOfLife(object):
-    def __init__(self, shape, sweeps, initial):
+    def __init__(self, shape, initial):
 
         self.shape = shape
-        self.sweeps = sweeps
         self.initial = initial
 
         self.create_lattice()
