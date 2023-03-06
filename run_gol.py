@@ -10,6 +10,7 @@ from Game_Of_Life import GameOfLife
 
 
 def animate(life: GameOfLife, sweeps: int) -> None:
+    """Animate Conway's game of life and save as gif"""
     fig = plt.figure(figsize=(9, 9))
     ax = fig.add_subplot(1, 1, 1)
     ims = []
@@ -39,7 +40,10 @@ def animate(life: GameOfLife, sweeps: int) -> None:
 
 
 def equilibrium_calculation(reruns: int, shape: int, max_sweeps: int) -> None:
-
+    """
+    Calculate how long it takes for an initial state to reach equilibrium
+    Plot results as histogram
+    """
     t_stable = []
 
     for n in tqdm(range(reruns)):
@@ -67,16 +71,23 @@ def equilibrium_calculation(reruns: int, shape: int, max_sweeps: int) -> None:
         [(b1 + b2) / 2.0 for (b1, b2) in zip(bin_edges[:-1], bin_edges[1:])]
     )
 
-    plt.step(bin_points, hist / reruns, where="mid")
-    plt.xlabel("Number of sweeps for equilibrium")
-    plt.ylabel("Fraction of runs")
-    plt.title(f"Time taken for {shape}x{shape} lattice to reach equilibrium")
+    fig = plt.figure(figsize=(9, 9))
+    ax = fig.add_subplot(111)
+    ax.step(bin_points, hist / reruns, where="mid")
+    ax.set_xlabel(f"Number of sweeps for equilibrium")
+    ax.set_ylabel("Fraction of runs")
+    ax.set_title(
+        f"Time taken for {shape}x{shape} lattice to reach equilibrium"
+        f"\n{len(t_stable)}/{reruns} initial states reached equilibrium"
+    )
     plt.tight_layout()
-    plt.savefig("outputs/equilibrium_hist.png", dpi=500)
+    fig.savefig("outputs/equilibrium_hist.png", dpi=500)
 
 
 def mean_velocity(int_vel: npt.NDArray[np.float64]) -> float:
-
+    """
+    Calculate the mean velocity up to the first discontinuity.
+    """
     for end, (i, j) in enumerate(zip(int_vel[:-1], int_vel[1:])):
         if np.sign(i) == 1 and np.sign(j) == -1:
             break
@@ -85,7 +96,9 @@ def mean_velocity(int_vel: npt.NDArray[np.float64]) -> float:
 
 
 def velocity(com_position: npt.NDArray[np.float64], times: npt.NDArray[np.int64]):
-
+    """
+    Calcualte the velocity of a glider
+    """
     int_vel = np.gradient(com_position, axis=0).T
 
     x_int_vel = int_vel[0]
@@ -95,7 +108,10 @@ def velocity(com_position: npt.NDArray[np.float64], times: npt.NDArray[np.int64]
 
 
 def centre_of_mass(life: GameOfLife, sweeps: int) -> None:
-
+    """
+    Track centre of mass of a glider, and velocity
+    Plot results
+    """
     times = np.arange(sweeps)
     com_position = np.zeros((sweeps, 2))
 
@@ -110,30 +126,35 @@ def centre_of_mass(life: GameOfLife, sweeps: int) -> None:
 
     x_vel, y_vel = velocity(com_position, times)
 
-    plt.plot(times, com_position.T[0], label="x")
-    plt.plot(times, com_position.T[1], label="y")
-    plt.title(
+    fig = plt.figure(figsize=(9, 9))
+    ax = fig.add_subplot(111)
+    ax.plot(times, com_position.T[0], label="x")
+    ax.plot(times, com_position.T[1], label="y")
+    ax.set_title(
         f"Mean x velocity = {np.round(x_vel,2)} sites/sweep"
         f"\n Mean y velocity = {np.round(y_vel,2)} sites/sweep"
     )
-    plt.xlabel("Sweep number")
-    plt.ylabel("Position")
-    plt.legend()
+    ax.set_xlabel("Sweep number")
+    ax.set_ylabel("Position")
+    ax.legend()
     plt.tight_layout()
-    plt.savefig("outputs/centre_of_mass.png", dpi=500)
+    fig.savefig("outputs/centre_of_mass.png", dpi=500)
 
 
 def main():
 
     sweeps = 1000
-    shape = 250
+    shape = 100
+    reruns = 200
+    max_sweeps = 10000
     # initial = "random"
-    initial = "glider"
+    # initial = "glider"
 
-    life = GameOfLife(shape=shape, initial=initial)
-    # animate(life=life, sweeps=sweeps)
-    # equilibrium_calculation(shape=50, reruns=200, max_sweeps=10000)
-    centre_of_mass(life=life, sweeps=sweeps)
+    animate_life = GameOfLife(shape=shape, initial="random")
+    # animate(life=animate_life, sweeps=sweeps)
+    equilibrium_calculation(shape=shape, reruns=reruns, max_sweeps=max_sweeps)
+    com_life = GameOfLife(shape=shape, initial="glider")
+    centre_of_mass(life=com_life, sweeps=sweeps)
 
 
 if __name__ == "__main__":
