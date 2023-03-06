@@ -37,41 +37,25 @@ class GameOfLife(object):
 
     ########## Update the lattice ##########
 
-    """Return total value of all nearest neighbours """
-
-    def nearest_neighbours(self, i, j):
-
-        nearest_neighbours = 0.0
-        nearest_neighbours += self.lattice[self.pbc(i + 1)][j]
-        nearest_neighbours += self.lattice[self.pbc(i + 1)][self.pbc(j - 1)]
-        nearest_neighbours += self.lattice[self.pbc(i + 1)][self.pbc(j + 1)]
-        nearest_neighbours += self.lattice[self.pbc(i - 1)][j]
-        nearest_neighbours += self.lattice[self.pbc(i - 1)][self.pbc(j + 1)]
-        nearest_neighbours += self.lattice[self.pbc(i - 1)][self.pbc(j - 1)]
-        nearest_neighbours += self.lattice[i][self.pbc(j + 1)]
-        nearest_neighbours += self.lattice[i][self.pbc(j - 1)]
-
-        return nearest_neighbours
-
-    """Do the update following the rules """
-
     def update(self):
+        """Do the update following the rules"""
+
+        nearest_neighbours = (
+            np.roll(self.lattice, -1, 0)
+            + np.roll(self.lattice, 1, 0)
+            + np.roll(self.lattice, -1, 1)
+            + np.roll(self.lattice, 1, 1)
+            + np.roll(self.lattice, (1, 1), (0, 1))
+            + np.roll(self.lattice, (-1, -1), (0, 1))
+            + np.roll(self.lattice, (1, -1), (0, 1))
+            + np.roll(self.lattice, (-1, 1), (0, 1))
+        )
 
         # Save updates in a copy of the lattice
         new_lattice = np.copy(self.lattice)
-        for i in range(self.shape):
-            for j in range(self.shape):
-                nearest_neighbours = self.nearest_neighbours(i, j)
-                # If a dead cell has 3 living neighbours it comes to life
-                if new_lattice[i][j] == 0:
-                    if nearest_neighbours == 3.0:
-                        new_lattice[i][j] = 1.0
-                # If a living cell has too many or too few living neighbours it dies
-                else:
-                    if nearest_neighbours > 3.0 or nearest_neighbours < 2.0:
-                        new_lattice[i][j] = 0.0
-
-        # Update the lattice
+        new_lattice[np.where((self.lattice == 0) & (nearest_neighbours == 3.0))] = 1.0
+        new_lattice[np.where((self.lattice == 1) & (nearest_neighbours > 3))] = 0.0
+        new_lattice[np.where((self.lattice == 1) & (nearest_neighbours < 2))] = 0.0
         self.lattice = np.copy(new_lattice)
 
     ########## Calculate properties of the living cells ##########
