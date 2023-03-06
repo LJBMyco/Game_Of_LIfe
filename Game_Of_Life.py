@@ -19,27 +19,22 @@ class GameOfLife(object):
         self.create_lattice()
 
 
-    """Create an NxN lattice with given starting conditions"""
     def create_lattice(self):
+        """Create an NxN lattice with given starting conditions"""
 
-        self.lattice = np.zeros((self.shape, self.shape))
-        for i in range(self.shape):
-            for j in range(self.shape):
-                random_numer = np.random.random()
-                # Randomly assing 1s or 0s
-                if self.initial == 'random':
-                    if random_numer >= 0.5:
-                        self.lattice[i][j] = 1.0
-                    else:
-                        self.lattice[i][j] = 0.0
-                #Create glider in the centre of the grid
-                elif self.initial == 'glider':
-                    start = int(self.shape/2.0)
-                    self.lattice[start][start] = 1.0
-                    self.lattice[start+1][start] = 1.0
-                    self.lattice[start-1][start] = 1.0
-                    self.lattice[start+1][start-1] = 1.0
-                    self.lattice[start][start-2] = 1.0
+        if self.initial == 'random': 
+            self.lattice = np.random.random((self.size, self.size))
+            self.lattice[self.lattice >= 0.5] = 1.0
+            self.lattice[self.lattice < 0.5] = 0.0
+        
+        elif self.initial == 'glider':
+            self.lattice = np.zeros((self.shape, self.shape))
+            start = int(self.shape/2.0)
+            self.lattice[start][start] = 1.0
+            self.lattice[start+1][start] = 1.0
+            self.lattice[start-1][start] = 1.0
+            self.lattice[start+1][start-1] = 1.0
+            self.lattice[start][start-2] = 1.0
 
     """Impliments the periodic boundary conditions"""
     def pbc(self, i):
